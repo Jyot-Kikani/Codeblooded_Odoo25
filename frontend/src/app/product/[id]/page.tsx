@@ -4,9 +4,9 @@ import { dummyProducts } from "@/lib/dummyData"; // Adjust path if needed
 
 // --- Correct Prop Typing for a Next.js Page ---
 type ProductDetailPageProps = {
-  params: {
+  params: Promise<{
     id: string; // 'id' matches the folder name [id]
-  };
+  }>;
 };
 
 // This is an async function to simulate a future data fetch
@@ -18,10 +18,12 @@ async function getProductById(id: string) {
 }
 
 // Apply the correct type to the component's props
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
-  // Destructure 'id' directly from the params object (no await needed)
-  const { id } = params;
-  
+export default async function ProductDetailPage({
+  params,
+}: ProductDetailPageProps) {
+  // Await the params Promise before destructuring
+  const { id } = await params;
+
   const product = await getProductById(id);
 
   if (!product) {
