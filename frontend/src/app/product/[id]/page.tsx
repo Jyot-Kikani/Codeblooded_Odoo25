@@ -1,49 +1,33 @@
 import { notFound } from "next/navigation";
 import ProductClient from "./ProductClient";
-import { Product } from "./types";
+import { dummyProducts } from "@/lib/dummyData"; // Adjust path if needed
+
+// This is an async function to simulate a future data fetch
+async function getProductById(id: string) {
+  // In a real app, you would fetch this from a database:
+  // e.g., const product = await db.products.findUnique({ where: { id } });
+  const product = dummyProducts.find((p) => p.id === id);
+  return product;
+}
 
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }) {
-  const { id } = await params;
+  const { id } = params;
+  const product = await getProductById(id);
 
-  const products: Product[] = [
-    {
-      id: "1",
-      title: "Blue Denim Jacket",
-      description: "Stylish denim jacket in great condition.",
-      category: "Men",
-      size: "M",
-      condition: "Good",
-      tags: ["denim", "jacket"],
-      images: [
-        "https://placehold.co/500x300?text=Front",
-        "https://placehold.co/500x300?text=Back",
-      ],
-      uploader: "alexwears",
-      points: 40,
-    },
-    {
-      id: "2",
-      title: "Floral Summer Dress",
-      description: "Breezy floral dress for sunny days.",
-      category: "Women",
-      size: "S",
-      condition: "Like New",
-      tags: ["floral", "summer"],
-      images: [
-        "https://placehold.co/500x300?text=Front+Dress",
-        "https://placehold.co/500x300?text=Back+Dress",
-      ],
-      uploader: "emilythreads",
-      points: 60,
-    },
-  ];
-
-  const product = products.find((p) => p.id === id);
-  if (!product) return notFound();
+  if (!product) {
+    return notFound();
+  }
 
   return <ProductClient product={product} />;
+}
+
+// OPTIONAL: Generate static pages for each product at build time for better performance
+export async function generateStaticParams() {
+  return dummyProducts.map((product) => ({
+    id: product.id,
+  }));
 }

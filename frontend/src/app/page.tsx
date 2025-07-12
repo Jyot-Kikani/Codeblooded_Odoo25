@@ -1,121 +1,33 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Sparkles, Recycle, Heart, Users, ShoppingBag, Star, ArrowRight } from 'lucide-react';
-
-const dummyItems = [
-  {
-    id: 1,
-    title: "Floral Summer Dress",
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=400&h=300&fit=crop",
-    size: "M",
-    condition: "Like New",
-    type: "Women",
-    points: 250,
-    liked: false,
-  },
-  {
-    id: 2,
-    title: "Vintage Denim Jacket",
-    image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400&h=300&fit=crop",
-    size: "L",
-    condition: "Used",
-    type: "Men",
-    points: 180,
-    liked: true,
-  },
-  {
-    id: 3,
-    title: "Kid's Rainbow Raincoat",
-    image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?w=400&h=300&fit=crop",
-    size: "S",
-    condition: "Good",
-    type: "Kids",
-    points: 120,
-    liked: false,
-  },
-  {
-    id: 4,
-    title: "Silk Scarf Collection",
-    image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&h=300&fit=crop",
-    size: "OS",
-    condition: "Excellent",
-    type: "Accessories",
-    points: 95,
-    liked: false,
-  },
-  {
-    id: 5,
-    title: "Wool Winter Coat",
-    image: "https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=400&h=300&fit=crop",
-    size: "M",
-    condition: "Like New",
-    type: "Women",
-    points: 320,
-    liked: true,
-  },
-  {
-    id: 6,
-    title: "Sneaker Collection",
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop",
-    size: "42",
-    condition: "Good",
-    type: "Men",
-    points: 150,
-    liked: false,
-  },
-];
-
-const stats = [
-  { icon: Users, value: "50K+", label: "Active Swappers" },
-  { icon: Recycle, value: "2M+", label: "Items Exchanged" },
-  { icon: Heart, value: "85%", label: "Sustainability Score" },
-];
-
-const features = [
-  {
-    icon: ShoppingBag,
-    title: "Direct Swaps",
-    description: "Exchange items directly with other users"
-  },
-  {
-    icon: Star,
-    title: "Points System",
-    description: "Earn points for items you can't swap directly"
-  },
-  {
-    icon: Sparkles,
-    title: "Quality Verified",
-    description: "All items are verified for quality and authenticity"
-  },
-];
+import { ChevronRight, Sparkles, Recycle, Heart, ArrowRight } from 'lucide-react';
+import { dummyProducts, stats, features } from '@/lib/dummyData'; // Import centralized data
+import type { Product } from '@/lib/dummyData'; // Import the Product type
 
 export default function LandingPage() {
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState<Product['category'] | "All">("All");
   const [isVisible, setIsVisible] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    // Set initial visibility for fade-in animations
     setIsVisible(true);
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % 3);
-    }, 4000);
-    return () => clearInterval(interval);
   }, []);
 
-  const filteredItems = category === "All" 
-    ? dummyItems 
-    : dummyItems.filter((item) => item.type === category);
+  const filteredItems = category === "All"
+    ? dummyProducts
+    : dummyProducts.filter((item) => item.category === category);
 
-  const handleItemLike = (id: number) => {
+  const handleItemLike = (id: string) => {
     // This would typically update state or make an API call
-    console.log(`Liked item ${id}`);
+    console.log(`Toggled like for item ${id}`);
+    // You could add logic here to update the 'liked' status in the state
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
       {/* Floating Background Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-gradient-to-r from-emerald-200/20 to-teal-200/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute top-3/4 right-1/4 w-96 h-96 bg-gradient-to-r from-green-200/20 to-emerald-200/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
@@ -157,18 +69,18 @@ export default function LandingPage() {
             <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-green-600 bg-clip-text text-transparent">
               Swap.
             </span>
-            <br />
+            {' '}
             <span className="bg-gradient-to-r from-teal-600 via-green-600 to-emerald-600 bg-clip-text text-transparent">
               Save.
             </span>
-            <br />
+            {' '}
             <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent">
               Sustain.
             </span>
           </h2>
           
           <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Transform your wardrobe while saving the planet. Exchange clothes directly 
+            Transform your wardrobe while saving the planet. Exchange clothes directly
             or earn points in our sustainable fashion ecosystem.
           </p>
           
@@ -232,7 +144,7 @@ export default function LandingPage() {
             {["All", "Men", "Women", "Kids", "Accessories"].map((cat) => (
               <button
                 key={cat}
-                onClick={() => setCategory(cat)}
+                onClick={() => setCategory(cat as Product['category'] | 'All')}
                 className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                   category === cat
                     ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg transform scale-105"
@@ -249,7 +161,7 @@ export default function LandingPage() {
       {/* Featured Items */}
       <section className="pb-20 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             {filteredItems.map((item, index) => (
               <div
                 key={item.id}
@@ -260,7 +172,7 @@ export default function LandingPage() {
               >
                 <div className="relative overflow-hidden">
                   <img
-                    src={item.image}
+                    src={item.images[0]} // Use the first image from the array
                     alt={item.title}
                     className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
@@ -284,7 +196,7 @@ export default function LandingPage() {
                   </p>
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-emerald-600 font-medium px-3 py-1 bg-emerald-50 rounded-full">
-                      {item.type}
+                      {item.category} {/* Changed from item.type */}
                     </span>
                     <a href={`/product/${item.id}`} className="flex items-center text-emerald-600 hover:text-emerald-700 font-medium group">
                       View Details
