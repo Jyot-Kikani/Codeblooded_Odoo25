@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { dummyProducts } from '@/lib/dummyData';
-import { ArrowRight, Edit, Heart, Layers, Package, User } from 'lucide-react';
+import { ArrowRight, Edit, Layers, Package, User } from 'lucide-react';
 
 // Simulate data for the logged-in user
 const user = {
